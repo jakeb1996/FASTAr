@@ -1,33 +1,51 @@
 
 # Genomer (Genome Processor)
 
-Used to make simple modifications to FASTA formatted genome files.
+Used to make simple modifications to FASTA formatted genome files (generally provided by [UCSC](https://genome.ucsc.edu/))
 
 ## Modes
 
-### Collapse
+#### Collapse
 
-For collapsing multiline files into one. A FASTA comment will cause a new block to start.
+For collapsing multi-line FASTA blocks files into single-line blocks. A FASTA comment will cause a new block to start.
 
-### Extract
+#### Extract
 
-For extracting a subsequence within a file at specified start and end points. Ignores FASTA comments.
+For extracting a sequence within a file at specified start and end points. Ignores FASTA comments.
 
-### Analyse
+#### Analyse
 
 Provides some basic statistics about a FASTA file.
 
-### Refadjust
+#### Refadjust
 
-Takes the UCSC refGene MySQL table (as a tab separated file) and modifies the start and end points according to an offset (useful for after running 'extract' mode).
+Realigns genome annotations according to an offset. Useful for after extracting a sequence from a FASTA file and wanting to maintaing the annotation.
 
-This realigns the annotation with modified genome files.
+## Files Required
 
-RefAdjust calculates the new position by: `original position - offset`
+#### Genomer.py
 
-`offset`: generally, the start position used in extract mode
+By cloning this repository: `git clone https://github.com/jakeb1996/Genomer.git`
 
-## Verification method
+#### FASTA sequence
+
+Obtained from UCSC FTP server ([help](https://genome.ucsc.edu/goldenpath/help/ftp.html)).
+
+Server: `ftp://hgdownload.cse.ucsc.edu` (user: `anonymous` pass: `<your-email>`)
+
+Chromosome example: `/apache/htdocs/goldenPath/mm10/chromosomes/chr19.fa.gz`
+
+#### Annotation file
+
+Obtained from UCSC MySQL server ([help](https://genome.ucsc.edu/goldenpath/help/mysql.html))
+
+MySQL server: genome-mysql.soe.ucsc.edu (username: genome, password: <your-email>)
+           
+Find `mm10` database. Find `refGene` table. Export as tab separated file. 
+           
+This is a simple task using the Table Data Export Wizard in MySQL Workbench ([help](https://dev.mysql.com/doc/workbench/en/wb-admin-export-import-table.html)).
+
+## Verification
 
 Note: this to verify that collapsing, modifying an annotation and extracting DNA sequences is done correctly.
 
