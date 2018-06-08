@@ -1,12 +1,12 @@
 ###
 #
-# === Genomer (Genome Processor) ===
+# === FASTAr (FASTA Processor) ===
 #
 #   = Written by Jake Bradford
 #   = Licensed under MIT license. See LICENSE file.
 #
 #   = See README.md for detailed instructions and verification method.
-#   = Or use: python genomer.py --help
+#   = Or use: python fastar.py --help
 #
 # === END ===
 #
@@ -36,7 +36,7 @@ def main(args):
         print 'Could not find file: %s' % args.f
         exit
 
-    ### Collapse genome into single line
+    ### Collapse FASTA into single line
     if args.m == 'collapse':
         print 'Collapsing into single line (but leaving FASTA comments in tact)'
         
@@ -117,7 +117,7 @@ def main(args):
                 fWrite.write(sequence[(start):end])
         print 'Done.'
 
-    ### Adjust a genome annotation file
+    ### Adjust a FASTA annotation file
     if args.m == 'refadjust':
         print args
         offset = int(args.o)
@@ -156,7 +156,7 @@ def main(args):
                 
         print 'Done.'                    
 
-    ### Adjust a genome annotation file
+    ### Adjust a FASTA annotation file
     if args.m == 'analyse':
         with open(args.f, 'r') as fRead:
             print '\nAnalysing file: %s' % args.f
@@ -199,7 +199,7 @@ def main(args):
             print 'Done.'
             
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Genomer (Genome Processor)')
+    parser = argparse.ArgumentParser(description = 'FASTAr (FASTA Processor)')
     parser.add_argument('-m', help='Mode (%s)' % ' | '.join(MODES), default=None, required=True)
     parser.add_argument('-f', help='File to process', default=None, required=True)
     parser.add_argument('-s', help='[extract] start position (inclusive)', default=None)
