@@ -3,6 +3,8 @@
 
 Used to make simple modifications to FASTA formatted genome files (generally provided by [UCSC](https://genome.ucsc.edu/))
 
+Written by Jake Bradford. Checkout our lab website! [biomedicaldatascience.com](http://biomedicaldatascience.com)
+
 ## Modes
 
 #### Collapse
@@ -144,3 +146,9 @@ Genomer.py process: `TCTCTCGACA`...`GTCCCCGCAA`
 Note: if you followed this process precisely, the final file you should look at is called: `<dirs>/chr19.fa.collapse.extract.extract`
 
 **9) Verification complete**
+
+Congratulations!
+
+# License
+
+* See LICENSE *
