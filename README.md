@@ -49,12 +49,14 @@ This is a simple task using the Table Data Export Wizard in MySQL Workbench ([he
 
 Note: this to verify that collapsing, modifying an annotation and extracting DNA sequences is done correctly.
 
- 1) Visit this URL to view GRCm38/mm10 chr19:16,767,421-20,818,303 in the UCSC
+**1) Visit this URL to view GRCm38/mm10 chr19:16,767,421-20,818,303 in the UCSC**
        Genome Browser. It will show Foxb2 gene. Follow link below.
        
 [UCSC Browser - GRCm38/mm10 Chr19](https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm10&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=chr19%3A16767421-20818303&hgsid=674918601_YLI5ZKYBVVEjC29faHGp1IVNABk8)
  
- 2) Right click on Foxb2 and:
+**2) Obtain Foxb2 gene info**
+
+Right click on Foxb2 and:
  
        - Get DNA for Foxb2, AND
        
@@ -67,75 +69,84 @@ Note: this to verify that collapsing, modifying an annotation and extracting DNA
 [Open details page in new window](https://genome.ucsc.edu/cgi-bin/hgGene?hgg_gene=uc008gxc.1&hgg_prot=uc008gxc.1&hgg_chrom=chr19&hgg_start=16872315&hgg_end=16873830&hgg_type=knownGene&db=mm10&c=chr19&l=16767420&r=20818303)
 
 
- 3) Run genomer.py in collapse mode to collapse chr19 of mm10.
+**3) Collapse chr19 data**
+
+Run `genomer.py` in collapse mode to collapse chr19 of mm10 (collapsed multi-line DNA sequence into single-line DNA sequence).
        
-       Obtain chr19 data:
+If you need CHR19 see above or:
            
-           UCSC data: `ftp://hgdownload.cse.ucsc.edu`
-           
-           Navigate to: `/apache/htdocs/goldenPath/mm10/chromosomes`
-           
-           Download: `chr19.fa.gz`
+UCSC data: `ftp://hgdownload.cse.ucsc.edu`
+Navigate to: `/apache/htdocs/goldenPath/mm10/chromosomes`
+Download: `chr19.fa.gz`
        
-       ```python genomer.py -m collapse -f "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa"```
+```$ python genomer.py -m collapse -f "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa"```
 
-       You can verify the file was collapsed using the analyse mode
+You can verify the file was collapsed using the analyse mode
 
-       ```python genomer.py -m analyse -f  "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa"```
+```$ python genomer.py -m analyse -f  "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa"```
 
- 4) Run genomer.py in extract mode and extract 10m to 20m BP from the chr19 UCSC genome data
+**4) Extract large portion of Chr19**
+Run genomer.py in extract mode and extract 10m to 20m BP from the chr19 UCSC genome data
 
-       ```python genomer.py -m extract -s 10000000 -e 20000000 -f "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa.collapse"```
+```$ python genomer.py -m extract -s 10000000 -e 20000000 -f "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa.collapse"```
 
- 5) Run genome.py in refadjust mode to adjust the UCSC genome annotation file
+**5) Adjust the annotation file**
 
-       Obtain annotation:
+Seeing that we just took an extract from the chromosome file, the annotations will now be out of alignment.
+
+Run `genomer.py` in refadjust mode to adjust the UCSC genome annotation file
+
+Obtain annotation:
            
-           MySQL server: genome-mysql.soe.ucsc.edu (username: genome, password: <your-email>)
+MySQL server: `genome-mysql.soe.ucsc.edu` (username: `genome`, password: `<your-email>`)
            
-           Find `mm10` database. Find `refGene` table. Export as tab separated file. 
+Find `mm10` database. Find `refGene` table. Export as tab separated file. 
            
-           This is a simple task using MySQL Workbench (use Table Data Export Wizard)
+This is a simple task using MySQL Workbench (use Table Data Export Wizard)
            
-           In our example, we have named this TSV file `refGene.txt`
+In our example, we have named this TSV file `refGene.txt`
 
-       ```python genomer.py -m refadjust -f "C:\genomes\mm10-ucsc-mod\chr19\refGene.txt" -o 10000000 -l 50```
+```$ python genomer.py -m refadjust -f "C:\genomes\mm10-ucsc-mod\chr19\refGene.txt" -o 10000000 -l 50```
            
-           -o flag (offset flag) should be equal to the -s flag in step 3
+`-o` flag (offset flag) should be equal to the `-s` flag in step 4
            
-           -l flag indicates length of each line in original UCSC genome data file
+`-l` flag indicates length of each line in original UCSC genome data file
        
- 6) Find Foxb2 in the adjusted annotation file.
+**6) Find Foxb2 in the adjusted annotation file**
       
-       Note: each numerical value in "adjusted" is 10m less than in "original".
+Note: each numerical value in "adjusted" is 10m less than in "original".
 
-       Original:
+Original:
        
-       `713	NM_008023	chr19	-	16872315	16873830	16872353	16873640	1	16872315,	16873830,	0	Foxb2	cmpl	cmpl	0,`
+`713	NM_008023	chr19	-	16872315	16873830	16872353	16873640	1	16872315,	16873830,	0	Foxb2	cmpl	cmpl	0,`
        
-       Adjusted:
+Adjusted:
        
-       `713	NM_008023	chr19	-	6872315	6873830	6872353	6873640	1	6872315,	6873830,	0	Foxb2	cmpl	cmpl	0,`
+`713	NM_008023	chr19	-	6872315	6873830	6872353	6873640	1	6872315,	6873830,	0	Foxb2	cmpl	cmpl	0,`
 
- 7) Run genomer.py in extract mode and extract Foxb2 from the output generated in step 4
+**7) Extract gene from custom chr19 file**
+
+Run `genomer.py` in extract mode and extract Foxb2 from the output generated in step 4
        
-       Note: -s and -e flags match the adjusted gene start and end values from step 6
+Note: `-s` and `-e` flags match the adjusted gene start and end values from step 6
            
-           Refer to the MySQL table structure for what each column represents
+Refer to the MySQL table structure for what each column represents
 
-       ```python genomer.py -m extract -f "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa.collapse.extract" -s 6872315 -e 6873830```    
+```$ python genomer.py -m extract -f "C:\genomes\mm10-ucsc-mod\chr19\chr19.fa.collapse.extract" -s 6872315 -e 6873830```    
 
- 8) Verify the sequence provided in "Get DNA for Foxb2" (step 2) from UCSC Genome Browser matches the extract produced in step 7.
+**8) Verify sequences match**
 
-       UCSC "Get DNA for Foxb2":
-           `TCTCTCGACA`...`GGTCCCCGCA`
+Verify the sequence provided in "Get DNA for Foxb2" (step 2) from UCSC Genome Browser matches the extract produced in step 7.
 
-       Genomer.py process:
+UCSC "Get DNA for Foxb2":
+`TCTCTCGACA`...`GGTCCCCGCA`
+
+Genomer.py process:
            
-           Note: if you followed this process precisely, the final file you should look at is called:
+Note: if you followed this process precisely, the final file you should look at is called:
            
-               `<dirs>/chr19.fa.collapse.extract.extract`
+`<dirs>/chr19.fa.collapse.extract.extract`
                
-           `TCTCTCGACA`...`GTCCCCGCAA`
+`TCTCTCGACA`...`GTCCCCGCAA`
 
- 9) Verification complete
+**9) Verification complete**
