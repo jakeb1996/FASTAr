@@ -25,7 +25,7 @@ Realigns FASTA annotations according to an offset. Useful for after extracting a
 
 ## Files Required
 
-#### FASTAr.py
+#### fastar.py
 
 By cloning this repository: `git clone https://github.com/jakeb1996/FASTAr.git`
 
@@ -73,7 +73,7 @@ In the UCSC FASTA Browser, right click on Foxb2 and:
 
 **3) Collapse chr19 data**
 
-Run `FASTAr.py` in collapse mode to collapse chr19 of mm10 (collapsed multi-line DNA sequence into single-line DNA sequence).
+Run `fastar.py` in collapse mode to collapse chr19 of mm10 (collapsed multi-line DNA sequence into single-line DNA sequence).
        
 If you need CHR19:
            
@@ -83,23 +83,23 @@ If you need CHR19:
 
 	3) Download: `chr19.fa.gz`
        
-```$ python FASTAr.py -m collapse -f "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa"```
+```$ python fastar.py -m collapse -f "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa"```
 
 You can verify the file was collapsed using the analyse mode
 
-```$ python FASTAr.py -m analyse -f  "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa"```
+```$ python fastar.py -m analyse -f  "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa"```
 
 **4) Extract large portion of Chr19**
 
-Run FASTAr.py in extract mode and extract 10m to 20m BP from the chr19 UCSC FASTA data
+Run fastar.py in extract mode and extract 10m to 20m BP from the chr19 UCSC FASTA data
 
-```$ python FASTAr.py -m extract -s 10000000 -e 20000000 -f "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa.collapse"```
+```$ python fastar.py -m extract -s 10000000 -e 20000000 -f "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa.collapse"```
 
 **5) Adjust the annotation file**
 
 Seeing that we just took an extract from the chromosome file, the annotations will now be out of alignment.
 
-Run `FASTAr.py` in refadjust mode to adjust the UCSC FASTA annotation file
+Run `fastar.py` in refadjust mode to adjust the UCSC FASTA annotation file
 
 Obtain annotation:
            
@@ -111,7 +111,7 @@ Obtain annotation:
            
 In our example, we have named this TSV file `refGene.txt`
 
-```$ python FASTAr.py -m refadjust -f "C:\FASTAs\mm10-ucsc-mod\chr19\refGene.txt" -o 10000000 -l 50```
+```$ python fastar.py -m refadjust -f "C:\FASTAs\mm10-ucsc-mod\chr19\refGene.txt" -o 10000000 -l 50```
            
 `-o` flag (offset flag) should be equal to the `-s` flag in step 4
            
@@ -127,13 +127,13 @@ Adjusted: `713	NM_008023	chr19	-	6872315	6873830	6872353	6873640	1	6872315,	6873
 
 **7) Extract gene from custom chr19 file**
 
-Run `FASTAr.py` in extract mode and extract Foxb2 from the output generated in step 4
+Run `fastar.py` in extract mode and extract Foxb2 from the output generated in step 4
        
 Note: `-s` and `-e` flags match the adjusted gene start and end values from step 6
            
 Refer to the MySQL table structure for what each column represents
 
-```$ python FASTAr.py -m extract -f "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa.collapse.extract" -s 6872315 -e 6873830```    
+```$ python fastar.py -m extract -f "C:\FASTAs\mm10-ucsc-mod\chr19\chr19.fa.collapse.extract" -s 6872315 -e 6873830```    
 
 **8) Verify sequences match**
 
@@ -141,7 +141,7 @@ Verify the sequence provided in "Get DNA for Foxb2" (step 2) from UCSC FASTA Bro
 
 UCSC "Get DNA for Foxb2": `TCTCTCGACA`...`GGTCCCCGCA`
 
-FASTAr.py process: `TCTCTCGACA`...`GTCCCCGCAA`
+fastar.py process: `TCTCTCGACA`...`GTCCCCGCAA`
            
 Note: if you followed this process precisely, the final file you should look at is called: `<dirs>/chr19.fa.collapse.extract.extract`
 
