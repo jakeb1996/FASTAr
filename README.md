@@ -49,14 +49,23 @@ This is a simple task using the Table Data Export Wizard in MySQL Workbench ([he
 
 Note: this to verify that collapsing, modifying an annotation and extracting DNA sequences is done correctly.
 
-**1) Visit this URL to view GRCm38/mm10 chr19:16,767,421-20,818,303 in the UCSC**
-       Genome Browser. It will show Foxb2 gene. Follow link below.
-       
-[UCSC Browser - GRCm38/mm10 Chr19](https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm10&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=chr19%3A16767421-20818303&hgsid=674918601_YLI5ZKYBVVEjC29faHGp1IVNABk8)
+**1) Understand the context of this method**
+
+View GRCm38/mm10 chr19:16,767,421-20,818,303 in the UCSC Genome Browser. It will show Foxb2 gene. [UCSC Browser - GRCm38/mm10 Chr19](https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm10&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=chr19%3A16767421-20818303&hgsid=674918601_YLI5ZKYBVVEjC29faHGp1IVNABk8)
+ 
+This verification method provides an example of:
+
+- Collapsing a FASTA file into a single line (this way line breaks are ignored; as *some* CRISPR related tools do anyway)
+
+- Extracting a sequence from the collapsed file (eg: you may only want a sample file that is 10 million base-pairs in length)
+
+- Updating an annotation file so that the annotations still align with your extract
+
+*Note: this method uses the Foxb2 gene as an example (the gene is very short)
  
 **2) Obtain Foxb2 gene info**
 
-Right click on Foxb2 and:
+In the UCSC Genome Browser, right click on Foxb2 and:
  
        - Get DNA for Foxb2, AND
        
