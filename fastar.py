@@ -12,11 +12,11 @@
 #
 ###
 
-import argparse, os, time
+import argparse, os, time, string
 
 
 ## Globals declaration
-MODES = ['collapse', 'extract', 'analyse', 'refadjust', 'refgeneextract']
+MODES = ['collapse', 'extract', 'analyse', 'refadjust', 'refgeneextract', 'singularise']
 
 def positionAdjust(position, offset, lineLength):
     return max(0, int(position) - offset)# - int(position) / lineLength)
@@ -224,6 +224,27 @@ def main(args):
                     if int(lineSplit[4]) >= start and int(lineSplit[5]) <= end:
                         fWrite.write('%s\n' % lineSplit[8])
     
+    ### Convert a multi-fasta file to multiple single fasta files
+    if args.m == 'singularise':
+        with open(args.f, 'r') as fRead:
+            fWrite = None
+            fWriteDir = os.path.dirname(args.f)
+            for line in fRead.readlines():
+                line = line.strip()
+                # just found a new fasta segment. open a new file
+                if line[0] == '>':
+                    charsToSwitch = ' +-.:;'
+                    fileName = os.path.join(fWriteDir, '%s.txt' % line[1:].translate(string.maketrans(charsToSwitch, '_' * len(charsToSwitch))))
+                    print fileName
+                    if fWrite is not None:
+                        fWrite.close()
+                    fWrite = open(fileName, 'w+')
+
+                fWrite.write('%s\n' % line)
+                
+            if fWrite is not None:
+                fWrite.close()
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'FASTAr (FASTA Processor)')
     parser.add_argument('-m', help='Mode (%s)' % ' | '.join(MODES), default=None, required=True)

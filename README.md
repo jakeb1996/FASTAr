@@ -23,6 +23,14 @@ Provides some basic statistics about a FASTA file.
 
 Realigns FASTA annotations according to an offset. Useful for after extracting a sequence from a FASTA file and wanting to maintaing the annotation.
 
+#### Refgeneextract
+
+Extract gene names between start and end position using the given reference
+
+#### Singularise
+
+Converts a single multi-FASTA formatted file into multiple single FASTA files.
+
 ## Files Required
 
 #### fastar.py
