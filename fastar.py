@@ -229,19 +229,33 @@ def main(args):
         with open(args.f, 'r') as fRead:
             fWrite = None
             fWriteDir = os.path.dirname(args.f)
+            
+            # for each line in the file
             for line in fRead.readlines():
                 line = line.strip()
+                
                 # just found a new fasta segment. open a new file
                 if line[0] == '>':
+                
+                    # prepare the file name
                     charsToSwitch = ' +-.:;'
-                    fileName = os.path.join(fWriteDir, '%s.txt' % line[1:].translate(string.maketrans(charsToSwitch, '_' * len(charsToSwitch))))
+                    processedName = line[1:].translate(string.maketrans(charsToSwitch, '_' * len(charsToSwitch)))
+                    fileName = os.path.join(fWriteDir, '%s.txt' % processedName)
+                    
+                    # print the new file name as a progress indicator
                     print fileName
+                    
+                    # close the current file if necessary
                     if fWrite is not None:
                         fWrite.close()
+                        
+                    # open a new one
                     fWrite = open(fileName, 'w+')
 
+                # write the line to the file
                 fWrite.write('%s\n' % line)
-                
+            
+            # close the last file if necessary
             if fWrite is not None:
                 fWrite.close()
 
