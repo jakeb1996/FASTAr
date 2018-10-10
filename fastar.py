@@ -80,11 +80,6 @@ def main(args):
     if args.m == 'extract':
         start = int(args.s)
         end = int(args.e)
-
-        if (start >= end):
-            print 'end number must be greater than start number'
-            exit
-
         with open(args.f, 'r') as fRead:
             with open('%s.extract' % args.f, 'w+') as fWrite:
                 fRead = fRead.read()
@@ -122,6 +117,10 @@ def main(args):
         print args
         offset = int(args.o)
         lineLength = int(args.l)
+        if args.c != None:
+            restrictToChrm = args.c.split(',')
+        else:
+            restrictToChrm = None
         with open(args.f, 'r') as fRead:
             with open('%s.refadjust' % args.f, 'w+') as fWrite:
                 fRead = fRead.read()
@@ -135,6 +134,10 @@ def main(args):
                     data = line.split('\t')
                     if len(data) < 10:
                         continue
+                    
+                    # keep the original length of this gene
+                    originalLength = int(data[5]) - int(data[4])
+                        
                     # we want to modify txStart (4), txEnd (5), cdsStart (6), cdsEnd (7) (integers)
                     # and exonStarts(9), exonEnds (10) (arrays).
                     # if val < 0: return 0
@@ -143,13 +146,24 @@ def main(args):
                     data[6] = positionAdjust(data[6], offset, lineLength)
                     data[7] = positionAdjust(data[7], offset, lineLength)
 
+                    # calculate new length
+                    newLength = int(data[5]) - int(data[4])
+                    
                     # split CSV (remove last comma), convert to INT, foreach calculate offset, convert to str, construct CSV with extra comma    
                     data[9] = adjustStringArray(data[9], offset, lineLength) #'%s,' % ','.join(map(str, [max(0, x - offset) for x in map(int, data[9][:-1].split(','))]))
                     data[10] = adjustStringArray(data[10], offset, lineLength) #'%s,' % ','.join(map(str, [max(0, x - offset) for x in map(int, data[10][:-1].split(','))]))
 
                     if i % 100 == 0:
                         print 'Progress: %s completed (of %s)' % (i, len(lines))
-                    fWrite.write('%s\n' % ('\t'.join(map(str, data))))
+                    
+                    # Determine whether the annotation line should be printed
+                    keepDifferentLength = (newLength != originalLength and args.removeDifferentLength == False)
+                    isSameLength = (newLength == originalLength)
+                    isWithinDesiredSetOfChr = (restrictToChrm == None or data[2] in restrictToChrm)
+                    isWithinBoundsOfAdjustment = (args.s == None or args.e == None) or (args.removeOutsideBounds and int(args.s) <= int(data[4]) and int(data[5]) <= int(args.e))
+                    
+                    if (keepDifferentLength or isSameLength) and isWithinDesiredSetOfChr and isWithinBoundsOfAdjustment:
+                        fWrite.write('%s\n' % ('\t'.join(map(str, data))))
                     i = i + 1
                 
                 print 'Finished %s of %s' % (i, len(lines))
@@ -230,15 +244,32 @@ def main(args):
                 
             if fWrite is not None:
                 fWrite.close()
-        
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'FASTAr (FASTA Processor)')
     parser.add_argument('-m', help='Mode (%s)' % ' | '.join(MODES), default=None, required=True)
     parser.add_argument('-f', help='File to process', default=None, required=True)
-    parser.add_argument('-s', help='[extract] start position (inclusive)', default=None)
-    parser.add_argument('-e', help='[extract] end position (inclusive)', default=None)
+    parser.add_argument('-s', help='[extract/refgeneextract] start position (inclusive)', default=None)
+    parser.add_argument('-e', help='[extract/refgeneextract] end position (inclusive)', default=None)
     parser.add_argument('-o', help='[refadjust] offset (x - offset)', default=None)
-    parser.add_argument('-l', help='[refadjust] line length of original file (UCSC = 50)', default=50)
+    parser.add_argument('-l', help='[refadjust] line length of original file (UCSC = 50) (does nothing)', default=50)
+    parser.add_argument('-c', help='[refadjust] include only these chromosomes as CSV format (eg: chr1,chr2,chr3) (default: all)', default=None)
+    parser.add_argument('--removeDifferentLength', help='[refadjust] Remove annotation if transcription LENGTH differs after adjustment. It would change if the transcription is trimmed because it was outside the bounds of -s and -e (after -o).', const=True, default=False, nargs='?')
+    parser.add_argument('--removeOutsideBounds', help='[refadjust] Remove annotation if it would run outside the bounds of -s to -e.', const=True, default=False, nargs='?')
     parser.add_argument('--upper', help='[collapse] Convert output sequence to uppercase', const=True, default=False, nargs='?')
-
-    main(parser.parse_args())
+    args = parser.parse_args()
+    
+    if os.path.exists(args.f) == False:
+        print 'File provided does not exist: %s' % args.f
+        exit()
+    
+    if args.m in ['extract', 'refgeneextract']:
+        if (args.s == None or args.e == None):
+            print 'Start (%s) and end (%s) numbers cannot be None.' %(args.s, args.e)
+            exit()
+        
+        if (int(args.s) >= int(args.e)):
+            print 'End number must be greater than start number.'
+            exit()
+    
+    main(args)
