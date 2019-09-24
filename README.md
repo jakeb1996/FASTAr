@@ -1,9 +1,8 @@
-
 # FASTAr (FASTA Processor)
 
-Used to make simple modifications to FASTA formatted FASTA files (generally provided by [UCSC](https://FASTA.ucsc.edu/))
+Used to make simple modifications to FASTA formatted FASTA files
 
-Written by Jake Bradford. Checkout our lab website! [biomedicaldatascience.com](http://biomedicaldatascience.com)
+Written by Jake Bradford
 
 ## Modes
 
