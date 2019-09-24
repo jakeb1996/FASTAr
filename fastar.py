@@ -58,7 +58,7 @@ def main(args):
                         fWrite.write('%s\n' % line)
                         if args.upper == True:
                             seqLine = seqLine.upper()
-                        fWrite.write('%s\n' % seqLine)
+                        fWrite.write('%s' % seqLine)
                         seqLine = ""
                     else:
                         seqLine = seqLine + line
@@ -231,7 +231,7 @@ def main(args):
             fWriteDir = os.path.dirname(args.f)
             
             # for each line in the file
-            for line in fRead.readlines():
+            for line in fRead:
                 line = line.strip()
                 
                 # just found a new fasta segment. open a new file
@@ -240,7 +240,7 @@ def main(args):
                     # prepare the file name
                     charsToSwitch = ' +-.:;'
                     processedName = line[1:].translate(string.maketrans(charsToSwitch, '_' * len(charsToSwitch)))
-                    fileName = os.path.join(fWriteDir, '%s.txt' % processedName)
+                    fileName = os.path.join(fWriteDir, '%s.fa' % processedName)
                     
                     # print the new file name as a progress indicator
                     print fileName
@@ -253,7 +253,8 @@ def main(args):
                     fWrite = open(fileName, 'w+')
 
                 # write the line to the file
-                fWrite.write('%s\n' % line)
+                if line[0] != '>':
+                    fWrite.write('%s\n' % line)
             
             # close the last file if necessary
             if fWrite is not None:
