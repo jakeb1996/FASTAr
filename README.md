@@ -21,11 +21,11 @@ Provides some basic statistics about a FASTA file.
 
 #### Refadjust
 
-Realigns FASTA annotations according to an offset. Useful for after extracting a sequence from a FASTA file and wanting to maintaing the annotation.
+Realigns UCSC refGene annotations according to an offset. Useful for after extracting a sequence from a FASTA file and maintaining the correct annotation for that region.
 
 #### Refgeneextract
 
-Extract gene names between start and end position using the given reference
+Extract gene names between start and end position using the given reference.
 
 #### Singularise
 
